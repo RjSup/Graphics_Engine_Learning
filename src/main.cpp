@@ -1,39 +1,37 @@
 #include <iostream>
-#include <GLFW/glfw3.h>
+#include <GL/glew.h> // first - handles loading extensions and includes the OpenGL headers
+#include <GLFW/glfw3.h> // second
 
 int main()
 {
-    /* Initialize the library */
+    // init GLFW before to get OPENGL context
     if (!glfwInit())
         return -1;
 
-    /* Create a windowed mode window and its OpenGL context */
-    GLFWwindow *window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    // create a window context
+    GLFWwindow* window = glfwCreateWindow(640, 480, "Hello World", nullptr, nullptr);
     if (!window)
     {
         glfwTerminate();
         return -1;
     }
 
-    /* Make the window's context current */
+    // create OpenGL context
     glfwMakeContextCurrent(window);
 
-    /* Loop until the user closes the window */
+    // check if GLEW working after GLFW
+    if (glewInit() != GLEW_OK) {
+        std::cerr << "Failed to initialize GLEW" << std::endl;
+    } else {
+        // if working show GPU information
+        std::cout << glGetString(GL_VERSION) << std::endl;
+    }
+
     while (!glfwWindowShouldClose(window))
     {
-        /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
-        // legacy opgengl stuff not good
-        // glBegin(GL_TRIANGLES);
-        // glVertex2f(-0.5f, -0.5f);
-        // glVertex2f(0.0f, 0.5f);
-        // glVertex2f(0.5f, -0.5f);
-        // glEnd();
 
-        /* Swap front and back buffers */
         glfwSwapBuffers(window);
-
-        /* Poll for and process events */
         glfwPollEvents();
     }
 
