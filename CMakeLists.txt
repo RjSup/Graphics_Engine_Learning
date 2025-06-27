@@ -9,6 +9,7 @@ find_package(OpenGL REQUIRED)
 include_directories(
         "C:/gfx/glfw-3.4/glfw-3.4.bin.WIN64/include"
         "C:/gfx/glew-2.2.0/include"
+        "/include"
 )
 
 # Linker search paths
