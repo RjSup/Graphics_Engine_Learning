@@ -196,8 +196,8 @@ int main()
     ShaderProgramSource sourceVert = ParseShader("../res/shaders/bbyblue.vert");
     ShaderProgramSource sourceFrag = ParseShader("../res/shaders/bbyblue.frag");
 
-    std::cout << "Vertex shader loader: " << !sourceVert.VertexSource.empty() << std::endl;
-    std::cout << "Fragment shader loader: " << !sourceFrag.FragmentSource.empty() << std::endl;
+    std::cout << "Vertex shader loaded: " << !sourceVert.VertexSource.empty() << std::endl;
+    std::cout << "Fragment shader loaded: " << !sourceFrag.FragmentSource.empty() << std::endl;
     std::cout << "Vertex source:\n" << sourceVert.VertexSource << std::endl;
     std::cout << "Fragments source:\n" << sourceFrag.FragmentSource << std::endl;
 
