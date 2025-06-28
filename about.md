@@ -5,7 +5,7 @@ And all things included
 
 using resources like chern0, scratchapixel, learnopengl, etc.
 
-OoenGL works as a state machine - tell what to do uses state
+OpenGL works as a state machine - tell what to do uses state
 
 1. to build a window context
    * init glfw
@@ -52,6 +52,25 @@ OoenGL works as a state machine - tell what to do uses state
      
 8. writing shaders
 
+9. ParseShader function
+    parses the shader file for fragment or vertex - when found keeps processing it
+    basically parses the info needed fo each type
+    * takes the file path
+    * opens an input file stream
+    * checks which shader type w/ enum
+    * takes a line which it uses to read line by line
+    * takes strinstream with 0 for vertex 1 for frag
+    * define shader type none
+   * read every line until #shader
+     * continues until vertex or fragment
+       * sets the mode accordingly
+     * otherwise keep readding
+
+10. Index Buffers
+   *
+
 
 - tips
     * use c++ types - important when using multiple API's etc
+    * both vertex and fragment shaders in same file and parse them for info respectively
+    * if vert and frag in separate files -> parse separately and use

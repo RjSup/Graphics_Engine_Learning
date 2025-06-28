@@ -2,39 +2,58 @@
 #include <GLFW/glfw3.h> // second
 
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
 
-//// writing the vertex shader - pos of indices
-    const std::string vertexShader =
-        // gsl
-        "#version 330 core\n"
-        "\n"
-        // index of the attribute
-        // needs to be a vec4 in future
-        "layout(location = 0)   in vec4 position;\n"
-        "\n"
-        // main func for shader
-        "void main()\n"
-        "{\n"
-        "   gl_Position = position;\n"
-        "}\n";
+// allowing returning 2 strings
+struct ShaderProgramSource
+{
+    std::string VertexSource;
+    std::string FragmentSource;
+};
 
-// writing the fragment shader
-// deciding what colour the pixels should be
-const std::string fragmentShader =
-    // gsl
-    "#version 330 core\n"
-    "\n"
-    // outputting a color
-    // needs to be a vec4 in future
-    "layout(location = 0)   out vec4 color;\n"
-    "\n"
-    // main func for shader
-    "void main()\n"
-    "{\n"
-        // try baby blue - non hdr
-    "   color = vec4(0.635, 0.816, 0.996, 1.0);\n"
-    "}\n";
+////
+//// parse the vertex and fragment shaders
+static ShaderProgramSource ParseShader(const std::string& filePath)
+{
+    // open the file
+    std::ifstream stream(filePath);
 
+    // check mode
+    enum class ShaderType
+    {
+        NONE = -1, VERTEX = 0, FRAGMENT = 1
+    };
+
+    std::string line;
+    std::stringstream ss[2];    // one for vertex one for fragment
+    ShaderType type = ShaderType::NONE; // default shader type is none
+
+    // go through the file and decide which shader it is
+    while (getline(stream, line)) {
+        //more lines to read
+        // if it finds shader
+        if (line.find("#shader") != std::string::npos) {
+            // if found vertex shader
+            if (line.find("vertex") != std::string::npos) {
+                // set mode to vertex
+                type = ShaderType::VERTEX;
+            }
+                // if found fragment shader
+            else if (line.find("fragment") != std::string::npos) {
+                // set mode to fragment
+                type = ShaderType::FRAGMENT;
+            }
+        } else if (type != ShaderType::NONE) {
+            ss[(int) type] << line << '\n';
+        }
+    }
+
+    return { ss[0].str(), ss[1].str() };
+}
+
+////
 //// compiling the shader
 // type - type of shader to make - vertex, fragment
 // source - the actual shader information
@@ -75,6 +94,7 @@ static unsigned int CompileShader(unsigned int type, const std::string& source)
     return id;
 }
 
+////
 //// creating a shader
 //  take the shaders to create
 static unsigned int CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
@@ -103,6 +123,7 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
     return program;
 }
 
+////
 int main()
 {
     // init GLFW before to get OPENGL context
@@ -139,6 +160,7 @@ int main()
          0.5f, -0.5f
     };
 
+    ////
     //// vertex buffer things
     unsigned int buffer;
     // define a vertex buffer using the memory pool (buffer)
@@ -156,6 +178,7 @@ int main()
     // static draw - draw something from buffer update every frame
     glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW);
 
+    ////
     //// setting up vertex attr and layout
     glEnableVertexAttribArray(0);
     // tell opengl what the actual layout of the buffer is
@@ -163,14 +186,27 @@ int main()
     // size - count of floats - 2 floats per vertex (atm)
     // normalized - to be between 0 and 1 from like 0-255
     // stride - amount of bytes between each vertex - use macro to automate (offsetof)
-    /// pointer - pointer into the actual attribute (amout of bytes betyween actual attributes) - use (offsetoff)
+    /// pointer - pointer into the actual attribute (amount of bytes between actual attributes) - use (offsetoff)
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr);
 
+    ////
+    // read the shader file in
+    //ShaderProgramSource source = ParseShader("../res/shaders/Basic.shader");
+    // vertex
+    ShaderProgramSource sourceVert = ParseShader("../res/shaders/bbyblue.vert");
+    ShaderProgramSource sourceFrag = ParseShader("../res/shaders/bbyblue.frag");
+
+    std::cout << "Vertex shader loader: " << !sourceVert.VertexSource.empty() << std::endl;
+    std::cout << "Fragment shader loader: " << !sourceFrag.FragmentSource.empty() << std::endl;
+    std::cout << "Vertex source:\n" << sourceVert.VertexSource << std::endl;
+    std::cout << "Fragments source:\n" << sourceFrag.FragmentSource << std::endl;
+
     // make shader by creating process
-    unsigned int shader = CreateShader(vertexShader, fragmentShader);
+    unsigned int shader = CreateShader(sourceVert.VertexSource, sourceFrag.FragmentSource);
     // bind shader
     glUseProgram(shader);
 
+    ////
     while (!glfwWindowShouldClose(window))
     {
         // clear buffers to preset values
@@ -190,6 +226,7 @@ int main()
         glfwPollEvents();
     }
 
+    glDeleteProgram(shader);
     // destroys all remaining windows and cursors - restores anything modified or allocated
     glfwTerminate();
     return 0;

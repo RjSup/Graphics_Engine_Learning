@@ -10,6 +10,8 @@ include_directories(
         "C:/gfx/glfw-3.4/glfw-3.4.bin.WIN64/include"
         "C:/gfx/glew-2.2.0/include"
         "/include"
+        "/res"
+        "/res/shaders"
 )
 
 # Linker search paths
