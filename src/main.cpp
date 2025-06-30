@@ -1,10 +1,10 @@
 #include <GL/glew.h> // first - handles loading extensions and includes the OpenGL headers
 #include <GLFW/glfw3.h> // second
 
-#include <iostream>
 #include <fstream>
-#include <string>
+#include <iostream>
 #include <sstream>
+#include <string>
 
 // allowing returning 2 strings
 struct ShaderProgramSource
