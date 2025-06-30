@@ -6,7 +6,7 @@
 #include <sstream>
 #include <string>
 
-// allowing returning 2 strings
+// allowing returning 2 strings by use fo struct
 struct ShaderProgramSource
 {
     std::string VertexSource;
@@ -191,18 +191,18 @@ int main()
 
     ////
     // read the shader file in
-    //ShaderProgramSource source = ParseShader("../res/shaders/Basic.shader");
+    ShaderProgramSource source = ParseShader("../res/shaders/Basic.shader");
     // vertex
-    ShaderProgramSource sourceVert = ParseShader("../res/shaders/bbyblue.vert");
-    ShaderProgramSource sourceFrag = ParseShader("../res/shaders/bbyblue.frag");
+    // ShaderProgramSource sourceVert = ParseShader("../res/shaders/bbyblue.vert");
+    // ShaderProgramSource sourceFrag = ParseShader("../res/shaders/bbyblue.frag");
 
-    std::cout << "Vertex shader loaded: " << !sourceVert.VertexSource.empty() << std::endl;
-    std::cout << "Fragment shader loaded: " << !sourceFrag.FragmentSource.empty() << std::endl;
-    std::cout << "Vertex source:\n" << sourceVert.VertexSource << std::endl;
-    std::cout << "Fragments source:\n" << sourceFrag.FragmentSource << std::endl;
+    std::cout << "Vertex shader loaded: " << !source.VertexSource.empty() << std::endl;
+    std::cout << "Fragment shader loaded: " << !source.FragmentSource.empty() << std::endl;
+    std::cout << "Vertex source:\n" << source.VertexSource << std::endl;
+    std::cout << "Fragments source:\n" << source.FragmentSource << std::endl;
 
     // make shader by creating process
-    unsigned int shader = CreateShader(sourceVert.VertexSource, sourceFrag.FragmentSource);
+    unsigned int shader = CreateShader(source.VertexSource, source.FragmentSource);
     // bind shader
     glUseProgram(shader);
 
