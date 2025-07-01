@@ -67,10 +67,27 @@ OpenGL works as a state machine - tell what to do uses state
      * otherwise keep readding
 
 10. Index Buffers
-   *
+   * allows for the reuse of existing vertices
+   * put on the cpu with arr - then give them to the gpu to use
+   * should be used for pretty much everything
 
+11. dealing with errors in OpenGL
+    * glgeterror - whenever func call if error occur a flag is set - gives back the flag of error
+      * call in a loop to get all errors
+      * debugbreak - allows to stop on the line with the problems
+      * using macro to asser if error is true or nah
+      * macro to call errors handle them and clear them
+        * error, function, line number
+
+    * gldebugmessagecallback - specify func pointer to opengl - opengl calls when error
 
 - tips
     * use c++ types - important when using multiple API's etc
     * both vertex and fragment shaders in same file and parse them for info respectively
     * if vert and frag in separate files -> parse separately and use
+    * all buffers must be unsigned - (unsigned int)
+
+    * GL_DRAW_ELEMENTS
+      * will draw any indices - including batch indices
+      * this way you can set up your scene - singular or batch rendering
+      * This is how you make for example a level or scene
