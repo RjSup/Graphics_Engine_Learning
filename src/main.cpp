@@ -180,8 +180,8 @@ int main()
 
     // makes the OpenGL context of the specified window current on the calling thread
     glfwMakeContextCurrent(window);
-
-    glfwSwapInterval(1);    // vsync - monitors refresh rate
+    // vsync - monitors refresh rate
+    glfwSwapInterval(1);
 
     // check if GLEW working after GLFW
     if (glewInit() != GLEW_OK) {
