@@ -187,6 +187,15 @@ int main()
     if (glewInit() != GLEW_OK) {
         std::cerr << "Failed to initialize GLEW" << std::endl;
     }
+
+    // check if its running core or compatibility
+    int profile;
+    glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &profile);
+    if (profile & GL_CONTEXT_CORE_PROFILE_BIT)
+        std::cout << "OpenGL Context: Core Profile" << std::endl;
+    else if (profile & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT)
+        std::cout << "OpenGL Context: Compatibility Profile" << std::endl;
+
     // if working show GPU information
     std::cout << glGetString(GL_VERSION) << std::endl;
 
@@ -255,6 +264,10 @@ int main()
     // send data to gpu
     GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
 
+    GLCall(glBindVertexArray(0));
+    GLCall(glUseProgram(0));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
     ////
     // read the shader file in
     ShaderProgramSource source = ParseShader("../res/shaders/Basic.shader");
@@ -279,11 +292,6 @@ int main()
     // use shader with uniform - set every pixel (baby blue)
     GLCall(glUniform4f(location, 0.635f, 0.816f, 0.996f, 1.0f));
 
-    GLCall(glBindVertexArray(0));
-    GLCall(glUseProgram(0));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
-    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-
     // just for testing - changing between r values
     float r = 0.0f;
     float increment = 0.05f;
@@ -300,7 +308,7 @@ int main()
         GLCall(glUniform4f(location, r, 0.816f, 0.996f, 1.0f));
 
         GLCall(glBindVertexArray(vao));
-        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+        // GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
 
         // issue a draw call for the buffer
         // GL_DRAW_ARRAYS - if you do not have an index buffer

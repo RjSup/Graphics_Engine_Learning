@@ -93,7 +93,11 @@ OpenGL works as a state machine - tell what to do uses state
     * for multiple objects
     * contains state - of objects
 
-- doesnt reallt exist in other graphics libs
+- if using core - must make vao
+- either global vao or separate vao for each unique geometry
+- 
+
+- doesn't really exist in other graphics libs
 
 - tips
     * use c++ types - important when using multiple API's etc
