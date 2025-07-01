@@ -6,12 +6,15 @@
 #include <sstream>
 #include <string>
 
-// macro for assertion
-#define ASSERT(x) if (!(x)) __debugbreak();
-// macro for logging and clearing errors in opengl errors
-#define GLCall(x) GLClearError();\
-    x;\
-    ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+// macro to add assertion - whether there is OpenGL error or nah
+#define ASSERT(x) if (!(x)) __debugbreak()
+
+// macro to only give errors in debug mode
+#ifdef _DEBUG
+    #define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+#else
+    #define GLCall(x)x
+#endif
 
 ////
 // clearing all OpenGL errors

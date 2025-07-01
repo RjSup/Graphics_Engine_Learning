@@ -87,6 +87,11 @@ OpenGL works as a state machine - tell what to do uses state
     * if vert and frag in separate files -> parse separately and use
     * all buffers must be unsigned - (unsigned int)
 
+- VBO - vertex buffer data
+- IBO - index buffer data
+- VAO - layout holder
+- 
+
     * GL_DRAW_ELEMENTS
       * will draw any indices - including batch indices
       * this way you can set up your scene - singular or batch rendering
