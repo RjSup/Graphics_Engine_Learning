@@ -80,6 +80,20 @@ OpenGL works as a state machine - tell what to do uses state
         * error, function, line number
 
     * gldebugmessagecallback - specify func pointer to opengl - opengl calls when error
+    
+12. uniforms
+    * a way to get data from the cpu into the shader
+    * set per draw - can set it up before drawing
+    * 
+
+- attributes are per vertex but same concept
+
+13. vertex arrays
+    * A way to bind vertex buffers with a certain specification for layout of that vertex buffer
+    * for multiple objects
+    * contains state - of objects
+
+- doesnt reallt exist in other graphics libs
 
 - tips
     * use c++ types - important when using multiple API's etc

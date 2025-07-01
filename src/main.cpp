@@ -164,6 +164,12 @@ int main()
     if (!glfwInit())
         return -1;
 
+    // tell opengl to use the core profile
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    // setting opengl to core
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
     // Creates a window and its associated OpenGL context - uses window hits too
     GLFWwindow* window = glfwCreateWindow(640, 480, "Window", nullptr, nullptr);
     if (!window)
@@ -175,7 +181,7 @@ int main()
     // makes the OpenGL context of the specified window current on the calling thread
     glfwMakeContextCurrent(window);
 
-    glfwSwapInterval(1);    // vsync 60hz etc
+    glfwSwapInterval(1);    // vsync - monitors refresh rate
 
     // check if GLEW working after GLFW
     if (glewInit() != GLEW_OK) {
@@ -204,6 +210,12 @@ int main()
     };
 
     ////
+    // setting up vertex array objects
+    unsigned int vao;
+    GLCall(glGenVertexArrays(1, &vao));
+    GLCall(glBindVertexArray(vao));
+
+    ////
     //// vertex buffer things
     unsigned int buffer;
     // define a vertex buffer using the memory pool (buffer)
@@ -220,7 +232,7 @@ int main()
     // copying positions into the buffer (* to positions)
     // static draw - draw something from buffer update every frame
     // send to gpu
-    GLCall(glBufferData(GL_ARRAY_BUFFER, 6 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW));
 
     ////
     //// setting up vertex attr and layout
@@ -231,6 +243,7 @@ int main()
     // normalized - to be between 0 and 1 from like 0-255
     // stride - amount of bytes between each vertex - use macro to automate (offsetof)
     /// pointer - pointer into the actual attribute (amount of bytes between actual attributes) - use (offsetoff)
+    /// index 0 of vertex array - binds to currently bound glarray buffer - links buffer with vao
     GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, nullptr));
 
     ////
@@ -259,12 +272,35 @@ int main()
     // bind shader
     GLCall(glUseProgram(shader));
 
-    ////
+    // loc of shader id variable - binding the shader
+    GLCall(int location = glGetUniformLocation(shader, "u_Color"));
+    // ensure shader is used
+    ASSERT(location != -1);
+    // use shader with uniform - set every pixel (baby blue)
+    GLCall(glUniform4f(location, 0.635f, 0.816f, 0.996f, 1.0f));
+
+    GLCall(glBindVertexArray(0));
+    GLCall(glUseProgram(0));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+
+    // just for testing - changing between r values
+    float r = 0.0f;
+    float increment = 0.05f;
+
+    ///
     while (!glfwWindowShouldClose(window))
     {
         // clear buffers to preset values
         // indicates the buffers currently enabled for color writing
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
+
+        GLCall(glUseProgram(shader));
+        // create test uniform - will change the r value
+        GLCall(glUniform4f(location, r, 0.816f, 0.996f, 1.0f));
+
+        GLCall(glBindVertexArray(vao));
+        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
 
         // issue a draw call for the buffer
         // GL_DRAW_ARRAYS - if you do not have an index buffer
@@ -273,6 +309,14 @@ int main()
         // glcall is checking for opengl errors and asserting whether there is error or nah
         // its also giving information about the error
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+
+        // test bounce r value - animating it
+        if (r > 1.0f)
+            increment = -0.05f;
+        else if (r < 0.0f)
+            increment = 0.05f;
+
+        r += increment;
 
         // swaps the front and back biffers of a specified window
         glfwSwapBuffers(window);
