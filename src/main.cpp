@@ -205,7 +205,7 @@ int main()
 #endif
 
     // Creates a window and its associated OpenGL context - uses window hits too
-    GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_WIDTH, "Window", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Window", nullptr, nullptr);
     if (!window)
     {
         glfwTerminate();
@@ -307,9 +307,6 @@ int main()
     ////
     // read the shader file in
     ShaderProgramSource source = ParseShader("../res/shaders/Basic.shader");
-    // vertex
-    // ShaderProgramSource sourceVert = ParseShader("../res/shaders/bbyblue.vert");
-    // ShaderProgramSource sourceFrag = ParseShader("../res/shaders/bbyblue.frag");
 
     std::cout << "Vertex shader loaded: " << !source.VertexSource.empty() << std::endl;
     std::cout << "Fragment shader loaded: " << !source.FragmentSource.empty() << std::endl;
