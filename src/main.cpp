@@ -170,6 +170,10 @@ int main()
     // setting opengl to core
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
     // Creates a window and its associated OpenGL context - uses window hits too
     GLFWwindow* window = glfwCreateWindow(640, 480, "Window", nullptr, nullptr);
     if (!window)
