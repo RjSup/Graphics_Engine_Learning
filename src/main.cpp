@@ -168,6 +168,25 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
     return program;
 }
 
+// process all input - query keys presses released this frame and react
+void processInput(GLFWwindow* window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+    }
+}
+
+// whenever window size changed - this callback function executes
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    // ensure viewport matches new window dimensions
+    ASSERT(glViewport(0, 0, width, height));
+}
+
+const unsigned int SCREEN_WIDTH = 800;
+const unsigned int SCREEN_HEIGHT = 600;
+
 ////
 int main()
 {
@@ -186,7 +205,7 @@ int main()
 #endif
 
     // Creates a window and its associated OpenGL context - uses window hits too
-    GLFWwindow* window = glfwCreateWindow(640, 480, "Window", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_WIDTH, "Window", nullptr, nullptr);
     if (!window)
     {
         glfwTerminate();
@@ -195,6 +214,8 @@ int main()
 
     // makes the OpenGL context of the specified window current on the calling thread
     glfwMakeContextCurrent(window);
+    // set the frame buffer size callback
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     // vsync - monitors refresh rate
     glfwSwapInterval(1);
 
@@ -314,6 +335,9 @@ int main()
     ///
     while (!glfwWindowShouldClose(window))
     {
+        // process user inputs
+        processInput(window);
+
         // clear buffers to preset values
         // indicates the buffers currently enabled for color writing
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
