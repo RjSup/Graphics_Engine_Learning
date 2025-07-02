@@ -7,7 +7,18 @@
 #include <string>
 
 // macro to add assertion - whether there is OpenGL error or nah
-#define ASSERT(x) if (!(x)) __debugbreak()
+#ifdef __MSC_VER
+    #define ASSERT(x) if (!(x)) __debugbreak()
+#elif defined(__APLE__)
+    #include <signal.h>
+    #include <execinfo.h>
+    #define ASSERT(x) if (!(x)) raise(SIGTRAP)
+#elif defined(__linux__)
+    #include <signal.h>
+    #define ASSERT(x) if (!(x)) builtin_trap()
+#else
+    #define ASSERT(x)
+#endif
 
 // macro to only give errors in debug mode
 #ifdef _DEBUG
